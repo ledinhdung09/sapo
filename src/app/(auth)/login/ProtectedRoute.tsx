@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 //import { useRouter } from "next/navigation";
 type ProtectedRouteProps = {
   children: ReactNode;
+  isAuthenticated: boolean;
 };
 const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   ////const router = useRouter();

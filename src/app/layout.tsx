@@ -25,7 +25,7 @@ export default function RootLayout({}: Readonly<{
   const pathname = usePathname(); // Lấy đường dẫn hiện tại từ Next.js
 
   const isLoginPage: boolean = pathname === "/login"; // Kiểm tra nếu là trang đăng nhập
-  const isAuthenticated = localStorage.getItem("authToken");
+  const isAuthenticated = localStorage.getItem("authToken") ? true : false;
 
   return (
     <html lang="en">
