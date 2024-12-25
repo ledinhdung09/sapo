@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AutoComplete,
   Button,
@@ -57,7 +57,6 @@ const CreateOrder = () => {
   const [dataAccount, setDataAccount] = useState<Account[]>([]);
   const [dataCustomer, setDataCustomer] = useState<Customer[]>([]);
   const [dataProduct, setDataProduct] = useState<Product[]>([]);
-  const autoCompleteRef = useRef(null);
 
   // Dữ liệu giả cho bảng sản phẩm
   const columns: ColumnsType<Product> = [
@@ -197,7 +196,6 @@ const CreateOrder = () => {
       label: `${product.product_name} - ${product.price}`,
     }));
     setOptions(allOptions);
-    autoCompleteRef.current?.focus();
     console.log("first");
   };
 
@@ -262,7 +260,6 @@ const CreateOrder = () => {
           <Card title="Sản phẩm">
             <Space direction="vertical" style={{ width: "100%" }}>
               <AutoComplete
-                ref={autoCompleteRef}
                 options={options}
                 onSearch={handleSearch}
                 onSelect={handleSelect}
