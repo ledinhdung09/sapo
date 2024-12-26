@@ -16,7 +16,6 @@ import {
   Typography,
 } from "antd";
 import { ArrowLeftOutlined } from "@ant-design/icons";
-import { useRouter } from "next/navigation";
 import {
   getAccountsAPI,
   getCustomersAPI,
@@ -25,6 +24,7 @@ import {
 import type { ColumnsType } from "antd/es/table";
 import { DeleteOutlined } from "@ant-design/icons";
 import Image from "next/image";
+import Link from "next/link";
 
 const { Option } = Select;
 
@@ -52,7 +52,6 @@ interface Product {
 const CreateOrder = () => {
   const { TextArea } = Input;
   const [form] = Form.useForm();
-  const router = useRouter();
   const token: any = localStorage.getItem("authToken");
   const [dataAccount, setDataAccount] = useState<Account[]>([]);
   const [dataCustomer, setDataCustomer] = useState<Customer[]>([]);
@@ -116,10 +115,6 @@ const CreateOrder = () => {
       ),
     },
   ];
-
-  const handleCancel = () => {
-    router.push("/admin/orders");
-  };
 
   const fetchDataAccount = async (token: string) => {
     try {
@@ -245,12 +240,13 @@ const CreateOrder = () => {
     <>
       <Row className="mb-3">
         <Space className="flex flex-row " direction="vertical">
-          <Button
-            className="me-3"
-            icon={<ArrowLeftOutlined />}
-            iconPosition={"start"}
-            onClick={handleCancel}
-          ></Button>
+          <Link href="/admin/orders">
+            <Button
+              className="me-3"
+              icon={<ArrowLeftOutlined />}
+              iconPosition={"start"}
+            ></Button>
+          </Link>
           <Typography.Title level={3}>Tạo đơn hàng</Typography.Title>
         </Space>
       </Row>

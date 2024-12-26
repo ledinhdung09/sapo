@@ -52,6 +52,7 @@ import Settings from "@/app/admin/settings/store/page";
 import ReportsAll from "@/app/admin/report/page";
 import CreateOrder from "@/app/admin/(order)/orders/create/page";
 import EditOrder from "@/app/admin/(order)/orders/[id]/page";
+import CreateProduct from "@/app/admin/(product)/products/create/page";
 
 const { Header, Sider, Content } = Layout;
 const ContentArea: React.FC = () => {
@@ -82,6 +83,8 @@ const ContentArea: React.FC = () => {
       return <Shipments />;
     case "/admin/products":
       return <Products />;
+    case "/admin/products/create":
+      return <CreateProduct />;
     case "/admin/collections":
       return <Collections />;
     case "/admin/inventories":
