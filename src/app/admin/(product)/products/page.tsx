@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Table, Typography } from "antd";
 import type { TableColumnsType, TablePaginationConfig } from "antd";
-import { getProductsAPI } from "@/api/handleApi";
+import { deleteProductsAPI, getProductsAPI } from "@/api/handleApi";
 import {
   DownloadOutlined,
   PlusCircleOutlined,
@@ -23,6 +23,15 @@ interface DataType {
 
 const columns: TableColumnsType<DataType> = [
   Table.SELECTION_COLUMN,
+  {
+    title: "ID",
+    dataIndex: "id",
+    key: "id",
+    sorter: (a: any, b: any) => b.id - a.id, // Sắp xếp giảm dần dựa trên ID
+    defaultSortOrder: "ascend", // Mặc định giảm dần
+    width: 20,
+    showSorterTooltip: false, // Không hiển thị tooltip
+  },
   { title: "Sản phẩm", dataIndex: "name", key: "name", width: 200 },
   {
     title: "Có thể bán",
@@ -82,6 +91,7 @@ export default function Products() {
     total: 0,
   });
   const [loading, setLoading] = useState<boolean>(false);
+  const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]); // Danh sách các hàng được chọn
 
   const fetchData = async (token: string) => {
     setLoading(true);
@@ -90,7 +100,7 @@ export default function Products() {
       console.log(res);
       const formatData = res.products.map((item: any, index: number) => ({
         key: index, // Dùng index làm key duy nhất
-        id: item.order_id || "", // Đảm bảo trường có giá trị, nếu không có trả về chuỗi rỗng
+        id: item.id || "", // Đảm bảo trường có giá trị, nếu không có trả về chuỗi rỗng
         name: item.product_name || "N/A", // Thay đổi nếu tên khách hàng không tồn tại
         date: formatDate(item.order_date) || "N/A",
         quantity: item.pricing.quantity || 0,
@@ -124,47 +134,93 @@ export default function Products() {
   };
 
   const handleRowClick = (record: DataType) => {
-    console.log("Row clicked:", record); // Thực hiện hành động khi click vào hàng
     const id: string = record.id;
-    router.push(`/admin/orders/${id}`);
+    router.push(`/admin/products/${id}`);
+  };
+
+  const handleDeleteSelected = async () => {
+    // Lấy danh sách các sản phẩm được chọn
+    const selectedItems = selectedRowKeys.map((key) =>
+      data.find((item) => item.key === key)
+    );
+
+    // Lấy danh sách id và key
+    const selectedIdsAndKeys = selectedItems.map((item) => ({
+      id: item?.id,
+      key: item?.key,
+    }));
+
+    console.log(
+      "Danh sách id và key các sản phẩm được chọn:",
+      selectedIdsAndKeys
+    );
+    // Xóa từng sản phẩm (giả sử API chỉ hỗ trợ xóa từng cái)
+    for (const item of selectedIdsAndKeys) {
+      const res = await deleteProductsAPI(token, item.id);
+      console.log(`Đã xóa sản phẩm với ID: ${item.id}`, res);
+    }
+
+    // Sau khi xóa thành công, cập nhật lại danh sách sản phẩm và reset selectedRowKeys
+    setSelectedRowKeys([]); // Reset trạng thái checkbox
+    fetchData(token); // Lấy lại dữ liệu mới
+  };
+
+  const rowSelection = {
+    selectedRowKeys, // Danh sách các hàng được chọn
+    onChange: (selectedKeys: React.Key[]) => {
+      setSelectedRowKeys(selectedKeys); // Cập nhật danh sách các hàng được chọn
+    },
   };
 
   return (
     <>
       <div className="flex justify-between items-center">
-        <Typography.Title level={3}>Danh sách đơn hàng</Typography.Title>
-        <div>
-          <Button
-            className="me-3"
-            icon={<UploadOutlined />}
-            iconPosition={"start"}
-          >
-            Xuất file
-          </Button>
-          <Button
-            className="me-3"
-            icon={<DownloadOutlined />}
-            iconPosition={"start"}
-          >
-            Nhập file
-          </Button>
-          <Button
-            type="primary"
-            icon={<PlusCircleOutlined />}
-            iconPosition={"start"}
-            onClick={handleAddCreateProduct}
-          >
-            Thêm sản phẩm
-          </Button>
-        </div>
+        {selectedRowKeys.length > 0 ? (
+          <div className="flex justify-between items-center w-full">
+            <Typography.Text>
+              Đã chọn {selectedRowKeys.length} sản phẩm
+            </Typography.Text>
+            <Button type="primary" danger onClick={handleDeleteSelected}>
+              Xóa sản phẩm
+            </Button>
+          </div>
+        ) : (
+          <>
+            <Typography.Title level={3}>Danh sách sản phẩm</Typography.Title>
+            <div>
+              <Button
+                className="me-3"
+                icon={<UploadOutlined />}
+                iconPosition={"start"}
+              >
+                Xuất file
+              </Button>
+              <Button
+                className="me-3"
+                icon={<DownloadOutlined />}
+                iconPosition={"start"}
+              >
+                Nhập file
+              </Button>
+              <Button
+                type="primary"
+                icon={<PlusCircleOutlined />}
+                iconPosition={"start"}
+                onClick={handleAddCreateProduct}
+              >
+                Thêm sản phẩm
+              </Button>
+            </div>
+          </>
+        )}
       </div>
       <Table<DataType>
         columns={columns}
-        rowSelection={{}}
+        rowSelection={rowSelection} // Gắn rowSelection vào bảng
         loading={loading}
         pagination={{
           ...pagination,
-          showTotal: (total) => `Tổng cộng ${total} đơn hàng`,
+
           position: ["bottomCenter"],
         }}
         dataSource={data}
