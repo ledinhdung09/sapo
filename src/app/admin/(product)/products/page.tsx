@@ -156,8 +156,16 @@ export default function Products() {
     );
     // Xóa từng sản phẩm (giả sử API chỉ hỗ trợ xóa từng cái)
     for (const item of selectedIdsAndKeys) {
-      const res = await deleteProductsAPI(token, item.id);
-      console.log(`Đã xóa sản phẩm với ID: ${item.id}`, res);
+      if (item?.id) {
+        try {
+          const res = await deleteProductsAPI(token, item.id);
+          console.log(`Đã xóa sản phẩm với ID: ${item.id}`, res);
+        } catch (error) {
+          console.error(`Lỗi khi xóa sản phẩm với ID: ${item.id}`, error);
+        }
+      } else {
+        console.warn("Sản phẩm không có ID hợp lệ:", item);
+      }
     }
 
     // Sau khi xóa thành công, cập nhật lại danh sách sản phẩm và reset selectedRowKeys
