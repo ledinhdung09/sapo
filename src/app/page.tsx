@@ -8,7 +8,7 @@ import { Layout } from "antd";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
-export default function HomePage() {
+export default function HomePage({ children }: { children: React.ReactNode }) {
   const pathname = usePathname(); // Lấy đường dẫn hiện tại từ Next.js
 
   const isLoginPage: boolean = pathname === "/login"; // Kiểm tra nếu là trang đăng nhập
