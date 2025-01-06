@@ -92,11 +92,10 @@ const CreateProduct = () => {
     let formData = form.getFieldsValue();
     formData = {
       ...formData,
-      avatar: fileList,
+      product_avatar: fileList,
       token: token,
     };
     const res = await addProductsAPI(formData);
-    console.log(res);
     if (res.success) {
       router.push("/admin/products");
     }

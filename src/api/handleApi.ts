@@ -76,6 +76,7 @@ export const addProductsAPI = async (dataProduct: any) => {
       product_name: dataProduct.product_name,
       rules: dataProduct.product_rules,
       notes: dataProduct.product_decription,
+      product_avatar: dataProduct.product_avatar,
       nhieuquycach: true,
       pricing: [
         {

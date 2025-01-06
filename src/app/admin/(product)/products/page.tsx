@@ -10,6 +10,7 @@ import {
 } from "@ant-design/icons";
 
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 interface DataType {
   key: React.Key;
@@ -31,6 +32,25 @@ const columns: TableColumnsType<DataType> = [
     defaultSortOrder: "ascend", // Mặc định giảm dần
     width: 20,
     showSorterTooltip: false, // Không hiển thị tooltip
+  },
+  {
+    title: "",
+    dataIndex: "avatar",
+    key: "avatar",
+    width: 50,
+    render: (text) => (
+      <Image
+        src={`https://banhang.hcrm.online/api/uploads/${text}`}
+        alt="a"
+        width={40}
+        height={40}
+        style={{
+          borderRadius: "10px",
+          border: "1px solid black",
+          objectFit: "cover",
+        }}
+      />
+    ),
   },
   { title: "Sản phẩm", dataIndex: "name", key: "name", width: 200 },
   {
@@ -98,16 +118,24 @@ export default function Products() {
     try {
       const res = await getProductsAPI(token);
       console.log(res);
-      const formatData = res.products.map((item: any, index: number) => ({
-        key: index, // Dùng index làm key duy nhất
-        id: item.id || "", // Đảm bảo trường có giá trị, nếu không có trả về chuỗi rỗng
-        name: item.product_name || "N/A", // Thay đổi nếu tên khách hàng không tồn tại
-        date: formatDate(item.order_date) || "N/A",
-        quantity: item.pricing.quantity || 0,
-        total: formatCurrency(item.total) || "0",
-        category_name: item.category_name || "Trống",
-        status_processing: item.processing_status || "Not Started",
-      }));
+
+      const formatData = res.products.map((item: any, index: number) => {
+        const avatars = item.product_avatar
+          ? item.product_avatar.split(";")
+          : []; // Tách avatar thành mảng
+        return {
+          key: index, // Dùng index làm key duy nhất
+          id: item.id || "", // Đảm bảo trường có giá trị, nếu không có trả về chuỗi rỗng
+          name: item.product_name || "N/A", // Thay đổi nếu tên khách hàng không tồn tại
+          date: formatDate(item.created_at) || "N/A",
+          quantity: item.pricing.quantity || 0,
+          total: formatCurrency(item.total) || "0",
+          category_name: item.category_name || "Trống",
+          status_processing: item.processing_status || "Not Started",
+          avatar: avatars[0] || "", // Lấy hình đầu tiên hoặc trả về chuỗi rỗng nếu không có hình
+        };
+      });
+
       setData(formatData);
       setPagination((prev) => ({
         ...prev,

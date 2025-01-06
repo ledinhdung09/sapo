@@ -33,7 +33,6 @@ export default function LoginPage() {
       if (response?.session_token && response?.username) {
         login(response.session_token);
         localStorage.setItem("username", response.username);
-        location.pathname = "/";
         router.push("/");
       } else {
         alert("Mật khẩu hoặc tài khoản không chính xác!");

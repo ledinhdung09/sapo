@@ -131,8 +131,12 @@ const Sidebar: React.FC = () => {
   }
 
   const [collapsed, setCollapsed] = useState(false);
-  const [openKeys, setOpenKeys] = useState<string[]>([""]); // Menu cha mặc định mở
-  const [selectedKeys, setSelectedKeys] = useState<string[]>(["1"]); // Mục con mặc định được chọn
+  const [openKeys, setOpenKeys] = useState<string[]>(
+    JSON.parse(localStorage.getItem("openKeys") || "[]")
+  ); // Khôi phục trạng thái openKeys từ localStorage
+  const [selectedKeys, setSelectedKeys] = useState<string[]>(
+    JSON.parse(localStorage.getItem("selectedKeys") || "[]")
+  ); // Khôi phục trạng thái selectedKeys từ localStorage
   const [cachedOpenKeys, setCachedOpenKeys] = useState<string[]>([]); // Lưu trạng thái trước khi collapsed
 
   useEffect(() => {
@@ -143,7 +147,10 @@ const Sidebar: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Lưu selectedKeys vào localStorage khi nó thay đổi
+    localStorage.setItem("openKeys", JSON.stringify(openKeys));
+  }, [openKeys]);
+
+  useEffect(() => {
     localStorage.setItem("selectedKeys", JSON.stringify(selectedKeys));
   }, [selectedKeys]);
 

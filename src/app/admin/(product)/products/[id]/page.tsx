@@ -76,6 +76,29 @@ const EditProduct = () => {
   const fetchDataProductById = async (token: string, id: string) => {
     try {
       const res = await getProductByIdAPI(token, id);
+      // Tách toàn bộ hình ảnh từ chuỗi
+      const allImages = res.product.product_avatar
+        .split(";") // Tách chuỗi
+        .filter((url: string) => url.trim() !== ""); // Loại bỏ các giá trị rỗng
+
+      // Lưu toàn bộ vào previewImage (dạng mảng)
+      setPreviewImage(
+        allImages.map(
+          (url: string) =>
+            `https://banhang.hcrm.online/api/uploads/${url.trim()}`
+        )
+      );
+
+      // Cập nhật fileList với tất cả hình ảnh
+      setFileList(
+        allImages.map((url: string, index: number) => ({
+          uid: `-${index}`, // Đảm bảo UID duy nhất
+          name: `product_avatar_${index + 1}.jpg`, // Đặt tên tạm
+          status: "done",
+          url: `https://banhang.hcrm.online/api/uploads/${url.trim()}`, // URL đầy đủ
+        }))
+      );
+
       setProductName(res.product.product_name);
       form.setFieldsValue({
         product_name: res.product.product_name || "",
@@ -97,6 +120,7 @@ const EditProduct = () => {
   useEffect(() => {
     fetchDataCateProduct(token);
     fetchDataProductById(token, id);
+    console.log(previewImage);
   }, [token, id]);
 
   const handlePreview = async (file: UploadFile) => {
@@ -281,6 +305,7 @@ const EditProduct = () => {
                 >
                   {fileList.length < 0 ? null : uploadButton}
                 </Upload>
+
                 {previewImage && (
                   <Image
                     wrapperStyle={{ display: "none" }}
