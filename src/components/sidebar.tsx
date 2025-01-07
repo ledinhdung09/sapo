@@ -144,6 +144,8 @@ const Sidebar: React.FC = () => {
     if (storedSelectedKeys) {
       setSelectedKeys(JSON.parse(storedSelectedKeys)); // Cập nhật từ localStorage
     }
+    const url: any = localStorage.getItem("urlcurent");
+    router.push(url);
   }, []);
 
   useEffect(() => {
@@ -379,6 +381,7 @@ const Sidebar: React.FC = () => {
     if (selectedItem?.url) {
       // Điều hướng trước khi cập nhật selectedKeys
       router.push(selectedItem.url);
+      localStorage.urlcurent = selectedItem.url;
     }
 
     setSelectedKeys([key]); // Cập nhật selectedKeys ngay sau khi điều hướng

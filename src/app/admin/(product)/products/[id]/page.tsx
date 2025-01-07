@@ -20,8 +20,8 @@ import {
   PlusOutlined,
 } from "@ant-design/icons";
 import {
-  addProductsAPI,
   deleteProductsAPI,
+  editProductsAPI,
   getAllCateProductAPI,
   getProductByIdAPI,
 } from "@/api/handleApi";
@@ -149,14 +149,26 @@ const EditProduct = () => {
     </button>
   );
 
-  const handleAddProduct = async () => {
+  const handleEditProduct = async () => {
     let formData = form.getFieldsValue();
+    const avatar1 = fileList
+      .filter((file) => !file.thumbUrl) // Lọc những file không có thumbUrl
+      .map((file) => {
+        // Trích xuất tên file từ URL
+        const urlParts = file.url.split("/");
+        return urlParts[urlParts.length - 1]; // Lấy phần tử cuối cùng
+      })
+      .join(";"); // Nối các tên file thành chuỗi, cách nhau bởi dấu `;`
+    const avatar2 = fileList.filter((file) => file.thumbUrl);
     formData = {
       ...formData,
-      avatar: fileList,
+      avatar1: avatar1,
+      avatar: avatar2,
       token: token,
+      id: id,
     };
-    const res = await addProductsAPI(formData);
+    console.log(avatar1);
+    const res = await editProductsAPI(formData);
     console.log(res);
     if (res.success) {
       router.push("/admin/products");
@@ -355,7 +367,7 @@ const EditProduct = () => {
                 Xóa
               </Button>
               {contextHolder}
-              <Button block type="primary" onClick={handleAddProduct}>
+              <Button block type="primary" onClick={handleEditProduct}>
                 Lưu
               </Button>
             </Space>

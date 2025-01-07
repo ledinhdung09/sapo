@@ -5,6 +5,7 @@ import ProtectedRoute from "@/app/(auth)/login/ProtectedRoute";
 import ProgressBar from "@/components/ProgressBar";
 import Sidebar from "@/components/sidebar";
 import { Layout } from "antd";
+import Head from "next/head";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
@@ -26,6 +27,9 @@ export default function HomePage() {
 
   return (
     <AuthProvider>
+      <Head>
+        <title>Sapo</title>
+      </Head>
       <ProtectedRoute isAuthenticated={isAuthenticated}>
         <div
           style={{

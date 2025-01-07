@@ -11,6 +11,7 @@ import {
 
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import Head from "next/head";
 
 interface DataType {
   key: React.Key;
@@ -210,6 +211,10 @@ export default function Products() {
 
   return (
     <>
+      <Head>
+        <title>Danh sách sản phẩm - Quản lý sản phẩm</title>
+        <meta name="description" content="Trang quản lý danh sách sản phẩm" />
+      </Head>
       <div className="flex justify-between items-center">
         {selectedRowKeys.length > 0 ? (
           <div className="flex justify-between items-center w-full">

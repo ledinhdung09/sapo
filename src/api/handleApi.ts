@@ -98,6 +98,38 @@ export const addProductsAPI = async (dataProduct: any) => {
   }
 };
 
+export const editProductsAPI = async (dataProduct: any) => {
+  try {
+    const response = await axiosApi.put(END_POINT.PRODUCT, {
+      session_token: dataProduct.token,
+      id: dataProduct.id,
+      category_id: dataProduct.cate,
+      product_name: dataProduct.product_name,
+      rules: dataProduct.product_rules,
+      notes: dataProduct.product_decription,
+      product_avatar: dataProduct.avatar,
+      existingAvatars: dataProduct.avatar1,
+      nhieuquycach: true,
+      pricing: [
+        {
+          product_price_first: dataProduct.product_price_first,
+          product_price: dataProduct.product_price,
+          product_price1: dataProduct.product_price1,
+          product_barcode: dataProduct.product_barcode,
+          product_sku: dataProduct.product_sku,
+        },
+      ],
+    });
+    return response.data;
+  } catch (error: any) {
+    console.error(
+      "Error fetching products:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
 // Hàm gọi API để lấy xóa sản phẩm
 export const deleteProductsAPI = async (token: string, id: string) => {
   try {
