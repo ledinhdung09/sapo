@@ -155,7 +155,7 @@ const EditProduct = () => {
       .filter((file) => !file.thumbUrl) // Lọc những file không có thumbUrl
       .map((file) => {
         // Trích xuất tên file từ URL
-        const urlParts = file.url.split("/");
+        const urlParts = file.url?.split("/") ?? [];
         return urlParts[urlParts.length - 1]; // Lấy phần tử cuối cùng
       })
       .join(";"); // Nối các tên file thành chuỗi, cách nhau bởi dấu `;`
